@@ -2,6 +2,7 @@
   <Dialog
     v-model:visible="visible"
     modal
+    dismissableMask
     :closable="false"
     class="bank-select-dialog"
   >
@@ -33,26 +34,29 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useBanksStore } from '../../stores/banksStore';
+import { useUiHistory } from '../../composables/useUiHistory'
 
 const banks = useBanksStore().banksSorted
 const filteredBanks = computed(() => banks.filter(bank => !props.bankIdsToFilter.includes(bank.id)))
 
 interface Props {
-  isOpen: boolean
   bankIdsToFilter: string[]
 }
 const props = defineProps<Props>()
-const emit = defineEmits(['toggle', 'select'])
+const emit = defineEmits(['select'])
 
-const visible = computed({
-  get: () => props.isOpen,
-  set: (value) => emit('toggle', value)
-})
+// open-close
+const { getComputedVisible } = useUiHistory()
+const visible = getComputedVisible('bankSelect')
+const openDialog = () => visible.value = true
 
 const onClickBankItem = (id: string) => {
   emit('select', id)
   visible.value = false
 }
+
+defineExpose({ open: openDialog })
+
 </script>
 
 <style lang="scss">

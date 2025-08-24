@@ -77,16 +77,11 @@ import { ref, watch } from 'vue';
 import type { CategoryItem } from '../../stores/monthsStore';
 import { generateId, moveArrElement } from '../../utils/common';
 
-const props = defineProps({
-  bankId: {
-    type: String,
-    required: true,
-  },
-  categories: {
-    type: Array as () => CategoryItem[],
-    required: true,
-  }
-})
+interface Props {
+  bankId: string,
+  categories: CategoryItem[],
+}
+const props = defineProps<Props>()
 
 const editedCategories = ref<CategoryItem[]>([ ...props.categories ])
 
@@ -117,7 +112,8 @@ defineExpose({
 
   .category-item-amount {
     :deep(input) {
-      width: 60px;
+      width: 45px;
+      padding-inline: 0.5rem;
     }
   }
   .category-item-name {

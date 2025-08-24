@@ -54,10 +54,9 @@
         @click="onClickAddBank"
       />
       <BankSelectDialog
-        :isOpen="isBankSelectDialogOpen"
         :bankIdsToFilter="currentMonthBankItems.map(item => item.id)"
-        @toggle="onToggleBankSelectDialog"
         @select="onAddBank"
+        ref="bankSelectDialogRef"
       />
     </div>
   </div>
@@ -84,47 +83,31 @@ import {
   sortBanksByIds,
 } from '../../utils/common';
 import BankSelectDialog from './BankSelectDialog.vue';
+import { useUiHistory } from '../../composables/useUiHistory';
 
-const props = defineProps({
-  isOpen: {
-    type: Boolean,
-    default: false
-  },
-  monthData: {
-    type: Object as () => Month,
-    required: true
-  }
-})
-const emit = defineEmits(['toggle'])
+interface Props {
+  monthData: Month
+}
+const props = defineProps<Props>()
 
-const visible = computed({
-  get: () => props.isOpen,
-  set: (value) => emit('toggle', value)
-})
-
-const banks = computed(() => useBanksStore().banksSorted)
+// open-close
+const { getComputedVisible } = useUiHistory()
+const visible = getComputedVisible(`monthEdit-${props.monthData.id}`)
+const openDialog = () => visible.value = true
+watch(() => visible.value, () => currentMonthBankItems.value = [ ...props.monthData.monthBankItems ])
 
 const dialogTitle = computed(() => getMonthTitleFromId(props.monthData.id, true))
-
+const banks = computed(() => useBanksStore().banksSorted)
 const currentMonthBankItems = ref([ ...props.monthData.monthBankItems ])
-watch(() => props.isOpen, () => {
-  currentMonthBankItems.value = [ ...props.monthData.monthBankItems ]
-})
-
 const bankItemEditFormRefs = ref<InstanceType<typeof MonthBankItemEditForm>[]>([])
 
 const onClickDeleteBank = (bankId: string) => {
   currentMonthBankItems.value = currentMonthBankItems.value.filter(item => item.id !== bankId)
 }
 
-
-// banks select
-const isBankSelectDialogOpen = ref(false)
-const onToggleBankSelectDialog = (value: boolean) => {
-  isBankSelectDialogOpen.value = value
-}
-
-const onClickAddBank = () => onToggleBankSelectDialog(true)
+// bank select
+const bankSelectDialogRef = ref<InstanceType<typeof BankSelectDialog>>()
+const onClickAddBank = () => bankSelectDialogRef.value?.open()
 
 const onAddBank = (bankId: string) => {
   currentMonthBankItems.value = [...currentMonthBankItems.value, reactive({
@@ -134,6 +117,7 @@ const onAddBank = (bankId: string) => {
     .sort((a, b) => sortBanksByIds(a.id, b.id, banks.value)) // помещаем добавленный банк на свое место, согласно sortOrder
 }
 
+// save
 const onClickSave = () => {
   const updatedBankItems = bankItemEditFormRefs.value.map(form => ({
     id: form.bankId,
@@ -142,6 +126,9 @@ const onClickSave = () => {
   useMonthsStore().updateMonth({id: props.monthData.id, monthBankItems: updatedBankItems})
   visible.value = false
 }
+
+defineExpose({ open: openDialog })
+
 </script>
 
 <style lang="scss">
@@ -167,6 +154,9 @@ const onClickSave = () => {
     }
   }
 
+  .p-dialog-content {
+    padding: 0.5rem;
+  }
   .month-edit-dialog-content {
     .month-bank-item {
       margin-bottom: 1rem;

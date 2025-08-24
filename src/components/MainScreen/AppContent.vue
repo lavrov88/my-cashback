@@ -10,9 +10,9 @@
         icon="pi pi-plus"
         rounded
         raised
-        @click="onToggleMonthAddDialog(true)"
+        @click="onToggleMonthAddDialog"
       />
-      <MonthAddDialog :isOpen="isMonthAddDialogOpen" @toggle="onToggleMonthAddDialog" />
+      <MonthAddDialog ref="monthAddDialog" />
     </div>
   </div>
 </template>
@@ -21,8 +21,8 @@
 import { computed, ref } from 'vue';
 import MonthCard from './MonthCard.vue'
 
-const isMonthAddDialogOpen = ref(false)
-const onToggleMonthAddDialog = (value: boolean) => isMonthAddDialogOpen.value = value
+const monthAddDialog = ref<InstanceType<typeof MonthAddDialog> | null>(null)
+const onToggleMonthAddDialog = () => monthAddDialog.value?.open()
 
 
 /* TEST DATA */

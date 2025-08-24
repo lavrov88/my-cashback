@@ -2,8 +2,6 @@
   <div id="app-wrapper">
     <AppHeader />
     <AppContent />
-
-    <AppConfirmDialog />
   </div>
 </template>
 

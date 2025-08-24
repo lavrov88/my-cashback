@@ -1,9 +1,10 @@
 <template>
   <Dialog
     v-model:visible="visible"
-    modal
-    :closable="false"
     class="month-bank-item-edit-dialog"
+    modal
+    dismissableMask
+    :closable="false"
   >
     <template #header>
       <div class="month-bank-item-edit-dialog-header">
@@ -36,31 +37,23 @@ import { useMonthsStore, type MonthBankItem } from '../../stores/monthsStore'
 import { useBanksStore } from '../../stores/banksStore'
 import { getMonthTitleFromId, getBankDataFromId } from '../../utils/common';
 import BankItemEditForm from './MonthBankItemEditForm.vue';
+import { useUiHistory } from '../../composables/useUiHistory';
 
-const props = defineProps({
-  isOpen: {
-    type: Boolean,
-    default: false,
-  },
-  month: {
-    type: String,
-    required: true,
-  },
-  monthBankItem: {
-    type: Object as () => MonthBankItem,
-    required: true,
-  }
-})
+interface Props {
+  month: string,
+  monthBankItem: MonthBankItem
+}
+const props = defineProps<Props>()
 
 const emit = defineEmits(['toggle'])
 
 const monthsStore = useMonthsStore()
 const banks = computed(() => useBanksStore().banksSorted)
 
-const visible = computed({
-  get: () => props.isOpen,
-  set: (value) => emit('toggle', value)
-})
+// open-close
+const { getComputedVisible } = useUiHistory()
+const visible = getComputedVisible('monthBankItemEdit')
+const openDialog = () => visible.value = true
 
 const bank = computed(() => getBankDataFromId(props.monthBankItem.id, banks.value))
 const bankTitleColor = computed(() => `var(--bank-color-${bank.value?.colorId})`)
@@ -78,6 +71,9 @@ const onClickSave = () => {
     visible.value = false
   }
 }
+
+defineExpose({ open: openDialog })
+
 </script>
 
 <style lang="scss">
@@ -97,6 +93,9 @@ const onClickSave = () => {
       font-size: 1.25rem;
       font-weight: 600;
     }
+  }
+  .p-dialog-content {
+    padding: 0.5rem;
   }
   .month-bank-item-edit-dialog-content {
     height: 100%;

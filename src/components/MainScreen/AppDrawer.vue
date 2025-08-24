@@ -1,6 +1,11 @@
 <template>
   <Drawer
     :visible="visible"
+    :pt="{
+      root: {
+        class: 'app-drawer'
+      }
+    }"
     @update:visible="onChangeVisible"
   >
     <template #container>
@@ -13,35 +18,38 @@
     </template>
   </Drawer>
 
-  <BanksEditDialog :isOpen="isBanksOpen" @toggle="isBanksOpen = false" />
+  <BanksEditDialog ref="banksEditDialogRef" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import BanksEditDialog from '../Dialogs/BanksEditDialog.vue'
+import { useUiHistory } from '../../composables/useUiHistory'
 
-defineProps({
-  visible: {
-    type: Boolean,
-    default: false
-  }
-})
-
-const emit = defineEmits(['change'])
-
-const onChangeVisible = (value: boolean) => {
-  emit('change', value)
-}
+// open-close
+const { getComputedDrawerVisible } = useUiHistory()
+const visible = getComputedDrawerVisible('menu')
+const openDrawer = () => visible.value = true
+const onChangeVisible = (value: boolean) => visible.value = value
 
 // banks
-const isBanksOpen = ref(false)
+const banksEditDialogRef = ref<InstanceType<typeof BanksEditDialog> | null>(null)
 const onClickBanks = () => {
-  isBanksOpen.value = true
   onChangeVisible(false)
+  setTimeout(() => {
+    banksEditDialogRef.value?.open()
+  }, 100);
 }
+
+defineExpose({ open: openDrawer })
+
 </script>
 
-<style scoped>
+<style lang="scss">
+.app-drawer {
+  width: 75vw !important;
+  max-width: 20rem;
+}
 .drawer-menu-item {
   padding: 1rem;
   display: flex;

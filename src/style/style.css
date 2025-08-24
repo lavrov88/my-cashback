@@ -2,8 +2,8 @@
 @import "banks-colors.css";
 
 :root {
-  /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; */
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif, system-ui, Arial;
+  font-size: 14px;
   line-height: 1.3;
   font-weight: 400;
 }

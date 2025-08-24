@@ -14,9 +14,8 @@
           />
           <Menu ref="menuRef" :model="menuItems" :popup="true" />
           <MonthEditDialog
-            :isOpen="isMonthEditDialogOpen"
             :monthData="monthData"
-            @toggle="onToggleMonthEditDialog"
+            ref="monthEditDialogRef"
           />
         </div>
       </div>
@@ -47,18 +46,18 @@
       </div>
 
       <MonthBankItemEditDialog
-        :isOpen="isBankItemEditDialogOpen"
         :month="props.monthData.id"
         :monthBankItem="(currentBankItemToEdit as MonthBankItem)"
-        @toggle="onToggleBankItemEditDialog"
+        ref="bankItemEditDialogRef"
       />
+      <AppConfirmDialog ref="confirmRef" />
     </template>
   </Card>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useConfirm } from 'primevue'
+import dayjs from 'dayjs'
 import type Menu from 'primevue/menu'
 import { useMonthsStore, type Month, type MonthBankItem } from '../../stores/monthsStore'
 import { useBanksStore } from '../../stores/banksStore'
@@ -68,16 +67,13 @@ import {
 } from '../../utils/common'
 import MonthEditDialog from '../Dialogs/MonthEditDialog.vue'
 import MonthBankItemEditDialog from '../Dialogs/MonthBankItemEditDialog.vue'
-import dayjs from 'dayjs'
+import AppConfirmDialog from '../Dialogs/AppConfirmDialog.vue'
 
-const props = defineProps({
-  monthData: {
-    type: Object as () => Month,
-    required: true
-  }
-})
+interface Props {
+  monthData: Month
+}
+const props = defineProps<Props>()
 
-const confirm = useConfirm()
 const banksStore = useBanksStore()
 const monthsStore = useMonthsStore()
 const banks = computed(() => banksStore.banksSorted)
@@ -85,22 +81,18 @@ const monthTitle = computed(() => getMonthTitleFromId(props.monthData.id, true))
 
 
 // menu
-
 const menuRef = ref<InstanceType<typeof Menu> | null>(null)
 const menuItems = ref([
-  { label: 'Редактировать', icon: 'pi pi-pencil', command: () => onToggleMonthEditDialog(true) },
+  { label: 'Редактировать', icon: 'pi pi-pencil', command: () => monthEditDialogRef.value?.open() },
   { label: 'Удалить', icon: 'pi pi-trash', command: () => onClickDeleteMonth() }
 ])
 const menuToggle = (event: Event) => menuRef.value?.toggle(event)
 
 // month edit dialog
-
-const isMonthEditDialogOpen = ref(false)
-const onToggleMonthEditDialog = (isOpen: boolean) => isMonthEditDialogOpen.value = isOpen
-
+const monthEditDialogRef = ref<InstanceType<typeof MonthEditDialog> | null>(null)
 
 // delete confirmation
-
+const confirmRef = ref<InstanceType<typeof AppConfirmDialog> | null>(null)
 const onClickDeleteMonth = () => {
   const month = dayjs(props.monthData.id)
   const today = dayjs()
@@ -108,16 +100,10 @@ const onClickDeleteMonth = () => {
   const deleteMonth = () => monthsStore.removeMonth(props.monthData.id)
 
   if (isCurrentOrFutureMonth) {
-    confirm.require({
+    confirmRef.value?.require({
       message: 'Этот месяц ещё не закончился. Удалить его?',
-      header: 'Подтверждение',
-      icon: 'pi pi-exclamation-triangle',
-      rejectProps: {
-        label: 'Отмена',
-      },
       acceptProps: {
         label: 'Удалить',
-        severity: 'danger',
       },
       accept: () => deleteMonth(),
     })
@@ -129,13 +115,12 @@ const onClickDeleteMonth = () => {
 
 // bank item edit dialog
 
-const isBankItemEditDialogOpen = ref(false)
-const onToggleBankItemEditDialog = (isOpen: boolean) => isBankItemEditDialogOpen.value = isOpen
+const bankItemEditDialogRef = ref<InstanceType<typeof MonthBankItemEditDialog> | null>(null)
 const currentBankItemToEdit = ref<MonthBankItem>({ id: '', categories: [] })
 
 const onClickBankItem = (bankItem: MonthBankItem) => {
   currentBankItemToEdit.value = bankItem
-  onToggleBankItemEditDialog(true)
+  bankItemEditDialogRef.value?.open()
 }
 </script>
 

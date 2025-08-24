@@ -5,13 +5,14 @@
         <Button
           icon="pi pi-bars"
           size="large"
+          raised
           @click="onClickMenuButton"
         />
       </template>
 
       <template #center>
         <div class="app-title-wrapper">
-          <h2>Cashback App</h2>
+          <h2>My Cashback</h2>
         </div>
       </template>
 
@@ -19,7 +20,7 @@
       </template>
     </Toolbar>
   </div>
-  <AppDrawer :visible="visible" @change="onChangeAppDrawer" />
+  <AppDrawer ref="appDrawerRef" />
 </template>
 
 <script setup lang="ts">
@@ -27,10 +28,8 @@ import { ref } from 'vue';
 import Toolbar from 'primevue/toolbar'
 import AppDrawer from './AppDrawer.vue';
 
-const visible = ref(false)
-const onClickMenuButton = () => visible.value = !visible.value
-const onChangeAppDrawer = (value: boolean) => visible.value = value
-
+const appDrawerRef = ref<InstanceType<typeof AppDrawer> | null>(null)
+const onClickMenuButton = () => appDrawerRef.value?.open()
 </script>
 
 <style scoped lang="scss">

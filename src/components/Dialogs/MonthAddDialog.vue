@@ -1,87 +1,88 @@
 <template>
   <Dialog
     v-model:visible="visible"
-    modal
     header="Добавить месяц"
-    :closable="false"
     class="month-add-dialog"
+    modal
+    dismissableMask
+    :closable="false"
   >
 
-  <div class="month-add-dialog-content">
-    <div class="datepicker-wrapper">
-      <DatePicker
-        :modelValue="date"
-        :inline="true"
-        view="month"
-        :disabled="selectedVariant !== 'custom'"
-        :pt="{
-          month: ptMonth,
-        }"
-        @update:modelValue="onChangeMonth"
-      />
-    </div>
+    <div class="month-add-dialog-content">
+      <div class="datepicker-wrapper">
+        <DatePicker
+          :modelValue="date"
+          :inline="true"
+          view="month"
+          :disabled="selectedVariant !== 'custom'"
+          :pt="{
+            month: ptMonth,
+          }"
+          @update:modelValue="onChangeMonth"
+        />
+      </div>
 
-    <div class="month-add-variants-wrapper">
-      <div class="month-add-variants">
-        <div class="month-add-variant">
-          <RadioButton
-            v-model="selectedVariant"
-            :disabled="isCurrentMonthDisabled"
-            size="large"
-            name="monthAddVariant"
-            inputId="current"
-            value="current"
-          />
-          <label for="current" :class="{ disabled: isCurrentMonthDisabled }">
-            Текущий
-            <span v-if="isCurrentMonthDisabled" class="disabled-comment">(уже есть)</span>
-          </label>
-        </div>
-        <div class="month-add-variant">
-          <RadioButton
-            v-model="selectedVariant"
-            :disabled="isNextMonthDisabled"
-            size="large"
-            name="monthAddVariant"
-            inputId="next"
-            value="next"
-          />
-          <label for="next" :class="{ disabled: isNextMonthDisabled }">
-            Следующий
-            <span v-if="isNextMonthDisabled" class="disabled-comment">(уже есть)</span>
-          </label>
-        </div>
-        <div class="month-add-variant">
-          <RadioButton
-            v-model="selectedVariant"
-            size="large"
-            name="monthAddVariant"
-            inputId="custom"
-            value="custom"
-          />
-          <label for="custom">Другой</label>
+      <div class="month-add-variants-wrapper">
+        <div class="month-add-variants">
+          <div class="month-add-variant">
+            <RadioButton
+              v-model="selectedVariant"
+              :disabled="isCurrentMonthDisabled"
+              size="large"
+              name="monthAddVariant"
+              inputId="current"
+              value="current"
+            />
+            <label for="current" :class="{ disabled: isCurrentMonthDisabled }">
+              Текущий
+              <span v-if="isCurrentMonthDisabled" class="disabled-comment">(уже есть)</span>
+            </label>
+          </div>
+          <div class="month-add-variant">
+            <RadioButton
+              v-model="selectedVariant"
+              :disabled="isNextMonthDisabled"
+              size="large"
+              name="monthAddVariant"
+              inputId="next"
+              value="next"
+            />
+            <label for="next" :class="{ disabled: isNextMonthDisabled }">
+              Следующий
+              <span v-if="isNextMonthDisabled" class="disabled-comment">(уже есть)</span>
+            </label>
+          </div>
+          <div class="month-add-variant">
+            <RadioButton
+              v-model="selectedVariant"
+              size="large"
+              name="monthAddVariant"
+              inputId="custom"
+              value="custom"
+            />
+            <label for="custom">Другой</label>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <template #footer>
-    <div class="footer-buttons">
-      <Button
-        label="Отмена"
-        text
-        severity="secondary"
-        @click="visible = false"
-      />
-      <SplitButton
-        :disabled="!date"
-        :model="monthAddItems"
-        label="Добавить"
-        class="p-button-text"
-        @click="addMonth('empty')"
-      />
-    </div>
-  </template>
+    <template #footer>
+      <div class="footer-buttons">
+        <Button
+          label="Отмена"
+          text
+          severity="secondary"
+          @click="visible = false"
+        />
+        <SplitButton
+          :disabled="!date"
+          :model="monthAddItems"
+          label="Добавить"
+          class="p-button-text"
+          @click="addMonth('empty')"
+        />
+      </div>
+    </template>
   </Dialog>
 </template>
 
@@ -89,19 +90,16 @@
 import dayjs from 'dayjs';
 import { computed, nextTick, ref, watch } from 'vue'
 import { useMonthsStore } from '../../stores/monthsStore';
+import { useUiHistory } from '../../composables/useUiHistory';
 
-// props
-interface Props {
-  isOpen: boolean
-}
-const props = defineProps<Props>()
 const emit = defineEmits(['toggle'])
 
-const visible = computed({
-  get: () => props.isOpen,
-  set: (value) => emit('toggle', value)
-})
-watch(() => props.isOpen, () => {
+// open-close
+const { getComputedVisible } = useUiHistory()
+const visible = getComputedVisible('addMonth')
+const openDialog = () => visible.value = true
+
+watch(() => visible.value, () => {
   // действия при открытии диалога
   if (!isCurrentMonthDisabled.value) {
     selectedVariant.value = 'current'
@@ -212,6 +210,7 @@ const monthAddItems = [
   { label: 'С банками и категориями из последнего месяца', command: () => addMonth('withBanksAndCategories') },
 ]
 
+defineExpose({ open: openDialog })
 </script>
 
 <style lang="scss">
