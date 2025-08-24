@@ -1,0 +1,21 @@
+/* === light theme === */
+:root {
+  --bank-color-0: #cbd5e1;
+  --bank-color-1: #34d399;
+  --bank-color-2: #fde047;
+  --bank-color-3: #f87171;
+  --bank-color-4: #38bdf8;
+  --bank-color-5: #bef264;
+}
+
+/* === dark theme === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bank-color-0: #475569;
+    --bank-color-1: #16a34a;
+    --bank-color-2: #ca8a04;
+    --bank-color-3: #b91c1c;
+    --bank-color-4: #0369a1;
+    --bank-color-5: #65a30d;
+  }
+}

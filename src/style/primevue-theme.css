@@ -1,0 +1,15 @@
+/* === dight theme === */
+:root {
+  --app-header-background: #cbd5e1;
+  --app-content-background: #f1f5f9;
+}
+
+/* === dark theme === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --app-header-background: #0f172a;
+    --app-content-background: #1f2937;
+  }
+}
+
+
