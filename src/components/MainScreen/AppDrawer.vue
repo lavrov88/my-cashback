@@ -16,7 +16,7 @@
   >
     <template #header>
       <div class="drawer-header-inner">
-        <Avatar image="/img/cashback-128.png" size="xlarge" />
+        <Avatar :image="cashbackIcon" size="xlarge" />
         <h2>My Cashback</h2>
       </div>
     </template>
@@ -31,6 +31,7 @@
 import { ref } from 'vue'
 import BanksEditDialog from '../Dialogs/BanksEditDialog.vue'
 import { useUiHistory } from '../../composables/useUiHistory'
+import cashbackIcon from '/img/cashback-128.png'
 
 // open-close
 const { getComputedDrawerVisible } = useUiHistory()
