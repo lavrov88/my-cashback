@@ -65,7 +65,7 @@
         label="Добавить категорию"
         icon="pi pi-plus"
         severity="secondary"
-        :style="{ width: '100%' }"
+        :style="{ width: '100%', height: '42px' }"
         @click="onClickAdd"
       />
     </div>

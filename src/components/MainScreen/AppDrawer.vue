@@ -16,7 +16,7 @@
   >
     <template #header>
       <div class="drawer-header-inner">
-        <Avatar :image="cashbackIcon" size="xlarge" />
+        <Avatar :image="cashbackIcon" size="xlarge" shape="circle" />
         <h2>My Cashback</h2>
       </div>
     </template>

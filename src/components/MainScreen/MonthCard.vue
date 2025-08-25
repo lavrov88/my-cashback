@@ -128,6 +128,7 @@ const onClickBankItem = (bankItem: MonthBankItem) => {
 .month-card {
   width: calc(100vw - 5rem);
   min-width: calc(100vw - 5rem);
+  max-height: calc(100vh - 65px - 14px - 28px - 10px);
   font-size: 1.1rem;
 
   .month-card-header {
@@ -143,6 +144,9 @@ const onClickBankItem = (bankItem: MonthBankItem) => {
 
   :deep(.p-card-body) {
     padding-top: 0;
+    overflow: auto;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0;
   }
 
   .month-bank-item {

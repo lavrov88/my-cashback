@@ -42,6 +42,13 @@ export const configurePrimeVue = (app: App) => {
         cssLayer: false
       }
     },
+    pt: {
+      button: {
+        root: {
+          // style: { paddingTop: '0.625rem', paddingBottom: '0.625rem' }
+        },
+      },
+    },
     locale: {
       monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
     },
