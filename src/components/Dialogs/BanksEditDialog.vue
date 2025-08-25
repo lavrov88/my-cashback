@@ -4,6 +4,7 @@
     modal
     header="Список банков"
     :closable="false"
+    dismissableMask
     class="banks-edit-dialog"
   >
     <div class="banks-edit-dialog-content">

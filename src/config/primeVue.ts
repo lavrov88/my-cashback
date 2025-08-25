@@ -5,6 +5,7 @@ import PrimeVue from 'primevue/config'
 import ThemePreset from './primeVueThemePreset'
 
 // components
+import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
 import ButtonGroup from "primevue/buttongroup"
 import Card from 'primevue/card'
@@ -48,6 +49,7 @@ export const configurePrimeVue = (app: App) => {
   })
 
   // primevue components
+  app.component('Avatar', Avatar)
   app.component('Button', Button)
   app.component('ButtonGroup', ButtonGroup)
   app.component('Card', Card)
