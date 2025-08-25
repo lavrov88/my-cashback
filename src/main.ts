@@ -1,9 +1,12 @@
 import { createApp } from 'vue'
+import { registerSW } from 'virtual:pwa-register'
+
 import { configurePrimeVue } from './config/primeVue'
 import { registerComponents } from './config/components'
 import { usePinia } from './config/pinia'
 
 import App from './App.vue'
+registerSW()
 
 // css, fonts
 import '@fontsource/inter/400.css'  // Regular
