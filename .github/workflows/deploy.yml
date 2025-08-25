@@ -21,7 +21,15 @@ jobs:
         run: npm install -g npm@11.3.0
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Ensure rollup native binary (fallback)
+        run: npm install @rollup/rollup-linux-x64-gnu --no-save || true
 
       - name: Build
         run: npm run build
