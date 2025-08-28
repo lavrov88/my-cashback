@@ -22,6 +22,12 @@
     </template>
 
     <Menu :model="menuItems" class="app-drawer-menu" />
+
+    <template #footer>
+      <div class="drawer-footer-inner">
+        <InstallButton />
+      </div>
+    </template>
   </Drawer>
 
   <BanksEditDialog ref="banksEditDialogRef" />
@@ -32,6 +38,7 @@ import { ref } from 'vue'
 import BanksEditDialog from '../Dialogs/BanksEditDialog.vue'
 import { useUiHistory } from '../../composables/useUiHistory'
 import cashbackIcon from '/img/cashback-128.png'
+import InstallButton from '../InstallButton.vue'
 
 // open-close
 const { getComputedDrawerVisible } = useUiHistory()

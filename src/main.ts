@@ -19,7 +19,7 @@ const app = createApp(App)
 usePinia(app)
 configurePrimeVue(app)
 registerComponents(app)
-configureDayjs()
 configurePwaParameters()
+configureDayjs()
 
 app.mount('#app')

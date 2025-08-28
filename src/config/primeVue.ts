@@ -18,6 +18,7 @@ import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
 import Listbox from 'primevue/listbox'
 import Menu from 'primevue/menu'
+import Message from 'primevue/message'
 import RadioButton from 'primevue/radiobutton';
 import Select from 'primevue/select';
 import SplitButton from 'primevue/splitbutton';
@@ -69,6 +70,7 @@ export const configurePrimeVue = (app: App) => {
   app.component('InputText', InputText)
   app.component('Listbox', Listbox)
   app.component('Menu', Menu)
+  app.component('Message', Message)
   app.component('RadioButton', RadioButton)
   app.component('Select', Select)
   app.component('SplitButton', SplitButton)
