@@ -50,8 +50,8 @@ const onClickMenuButton = () => appDrawerRef.value?.open()
     align-items: center;
     justify-content: center;
 
-    h1 {
-      margin: 0;
+    h2 {
+      user-select: none;
     }
   }
 }

@@ -2,12 +2,15 @@
   <div id="app-wrapper">
     <AppHeader />
     <AppContent />
+
+    <AppDialogsContainer />
   </div>
 </template>
 
 <script setup lang="ts">
 import AppHeader from './components/MainScreen/AppHeader.vue'
 import AppContent from './components/MainScreen/AppContent.vue'
+import AppDialogsContainer from './components/Dialogs/AppDialogsContainer.vue'
 </script>
 
 <style scoped lang="scss">

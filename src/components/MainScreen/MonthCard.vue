@@ -12,7 +12,12 @@
             size="small"
             @click="menuToggle"
           />
-          <Menu ref="menuRef" :model="menuItems" :popup="true" />
+          <Menu
+            ref="menuRef"
+            class="month-card-menu"
+            :model="menuItems"
+            :popup="true"
+          />
           <MonthEditDialog
             :monthData="monthData"
             ref="monthEditDialogRef"
@@ -132,35 +137,38 @@ const onClickBankItem = (bankItem: MonthBankItem) => {
   font-size: 1.1rem;
 
   .month-card-header {
-    padding: 20px;
+    padding: 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     h3 {
       font-size: 1.4rem;
+      user-select: none;
     }
   }
 
   :deep(.p-card-body) {
-    padding-top: 0;
-    overflow: auto;
     margin-bottom: 1.25rem;
-    padding-bottom: 0;
+    padding: 0 15px;
+    overflow: auto;
   }
 
   .month-bank-item {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 
     &:last-child {
       margin-bottom: 0;
     }
     .month-bank-item-title {
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.75rem;
       font-size: 1.25rem;
       font-weight: 500;
     }
-
+    :deep(.p-card-body) {
+      padding: 0 15px;
+      margin-bottom: 15px;
+    }
     .month-bank-item-categories {
       display: flex;
       flex-direction: column;
@@ -177,5 +185,14 @@ const onClickBankItem = (bankItem: MonthBankItem) => {
       }
     }
   }
+}
+:deep(.month-card-menu .p-menu-item-link) {
+  padding: 12px 20px !important;
+}
+</style>
+
+<style lang="scss">
+.month-card-menu .p-menu-item-link {
+  padding: 15px;
 }
 </style>

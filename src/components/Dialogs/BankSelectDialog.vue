@@ -7,6 +7,7 @@
     class="bank-select-dialog"
   >
     <Listbox
+      v-if="banks.length"
       :options="filteredBanks"
       optionLabel="name"
       optionValue="id"
@@ -23,6 +24,14 @@
       </template>
     </Listbox>
 
+    <div v-else class="bank-items-empty-state">
+      <div class="message">
+        <p>Вы пока не добавили в программу ни одного банка.</p>
+        <p>Чтобы перейти к редактированию списка банков, нажмите на кнопку ниже.</p>
+      </div>
+      <Button label="Список банков" severity="secondary" @click="onClickGoToBanksEditing" />
+    </div>
+
     <template #footer>
       <div class="footer-buttons">
         <Button label="Отмена" text severity="secondary" @click="visible = false" autofocus />
@@ -32,12 +41,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useBanksStore } from '../../stores/banksStore';
+import { computed } from 'vue'
+import { useBanksStore } from '../../stores/banksStore'
+import { useAppSettingsStore } from '../../stores/appSettingsStore'
 import { useUiHistory } from '../../composables/useUiHistory'
-
-const banks = useBanksStore().banksSorted
-const filteredBanks = computed(() => banks.filter(bank => !props.bankIdsToFilter.includes(bank.id)))
 
 interface Props {
   bankIdsToFilter: string[]
@@ -55,8 +62,13 @@ const onClickBankItem = (id: string) => {
   visible.value = false
 }
 
-defineExpose({ open: openDialog })
 
+// banks
+const banks = computed(() => useBanksStore().banksSorted)
+const filteredBanks = computed(() => banks.value.filter(bank => !props.bankIdsToFilter.includes(bank.id)))
+const onClickGoToBanksEditing = () => useAppSettingsStore().isOpenBanksEditDialog = true
+
+defineExpose({ open: openDialog })
 </script>
 
 <style lang="scss">
@@ -76,6 +88,18 @@ defineExpose({ open: openDialog })
       width: 20px;
       height: 20px;
       border-radius: 6px;
+    }
+  }
+  .bank-items-empty-state {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .message {
+      color: var(--p-toolbar-color);
+      margin-bottom: 1rem;
     }
   }
   .footer-buttons {

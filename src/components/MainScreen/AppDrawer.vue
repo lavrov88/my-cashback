@@ -29,16 +29,14 @@
       </div>
     </template>
   </Drawer>
-
-  <BanksEditDialog ref="banksEditDialogRef" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import BanksEditDialog from '../Dialogs/BanksEditDialog.vue'
 import { useUiHistory } from '../../composables/useUiHistory'
-import cashbackIcon from '/img/cashback-128.png'
+import { useAppSettingsStore } from '../../stores/appSettingsStore'
 import InstallButton from '../InstallButton.vue'
+import cashbackIcon from '/img/cashback-128.png'
 
 // open-close
 const { getComputedDrawerVisible } = useUiHistory()
@@ -72,11 +70,10 @@ const menuItems = ref([
 
 
 // banks
-const banksEditDialogRef = ref<InstanceType<typeof BanksEditDialog> | null>(null)
 const onClickBanks = () => {
   onChangeVisible(false)
   setTimeout(() => {
-    banksEditDialogRef.value?.open()
+    useAppSettingsStore().isOpenBanksEditDialog = true
   }, 100);
 }
 

@@ -112,7 +112,7 @@ defineExpose({
 
   .category-item-amount {
     :deep(input) {
-      width: 45px;
+      width: 50px;
       padding-inline: 0.5rem;
     }
   }
@@ -120,13 +120,13 @@ defineExpose({
     width: 100%;
   }
   .category-item-button {
-    width: 25px;
+    width: 20px;
 
     &.double {
-      min-width: 50px;
+      min-width: 40px;
     }
     &.delete-button {
-      min-width: 30px;
+      min-width: 20px;
       color: var(--p-dialog-color);
     }
   }

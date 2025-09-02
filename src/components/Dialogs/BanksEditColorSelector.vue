@@ -10,7 +10,10 @@
       },
       overlay: {
         class: 'bank-color-select-overlay'
-      }
+      },
+      listContainer: {
+        style: { maxHeight: 'max-content' },
+      },
     }"
     @update:modelValue="emit('update:value', $event)"
   >

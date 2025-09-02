@@ -9,59 +9,68 @@
   >
     <div class="banks-edit-dialog-content">
       <div class="bank-item-edit-form">
-        <div
-          v-for="(bank, idx) in editedBanks"
-          :key="bank.id"
-          class="bank-item"
-        >
-          <BanksEditColorSelector
-            :value="editedBanks[idx].colorId"
-            @update:value="editedBanks[idx].colorId = $event"
-          />
-
-          <InputText
-            class="bank-item-name"
-            :modelValue="bank.name"
-            @update:modelValue="editedBanks[idx].name = $event || ''"
-          />
-
-          <Button
-            v-if="idx === 0"
-            icon="pi pi-angle-down"
-            severity="secondary"
-            class="bank-item-button double"
-            @click="onClickMoveDown(bank.id)"
-          />
-          <ButtonGroup v-if="idx !== 0 && idx !== editedBanks.length - 1">
-            <Button
-              :disabled="idx === 0"
-              icon="pi pi-angle-up"
-              severity="secondary"
-              class="bank-item-button"
-              @click="onClickMoveUp(bank.id)"
+        <div v-if="editedBanks.length" class="bank-items">
+          <div
+            v-for="(bank, idx) in editedBanks"
+            :key="bank.id"
+            class="bank-item"
+          >
+            <BanksEditColorSelector
+              :value="editedBanks[idx].colorId"
+              @update:value="editedBanks[idx].colorId = $event"
             />
+  
+            <InputText
+              class="bank-item-name"
+              :modelValue="bank.name"
+              @update:modelValue="editedBanks[idx].name = $event || ''"
+            />
+  
             <Button
-              :disabled="idx === editedBanks.length - 1"
+              v-if="idx === 0"
               icon="pi pi-angle-down"
               severity="secondary"
-              class="bank-item-button"
+              class="bank-item-button double"
               @click="onClickMoveDown(bank.id)"
             />
-          </ButtonGroup>
-          <Button
-            v-if="idx === editedBanks.length - 1"
-            icon="pi pi-angle-up"
-            severity="secondary"
-            class="bank-item-button double"
-            @click="onClickMoveUp(bank.id)"
-          />
+            <ButtonGroup v-if="idx !== 0 && idx !== editedBanks.length - 1">
+              <Button
+                :disabled="idx === 0"
+                icon="pi pi-angle-up"
+                severity="secondary"
+                class="bank-item-button"
+                @click="onClickMoveUp(bank.id)"
+              />
+              <Button
+                :disabled="idx === editedBanks.length - 1"
+                icon="pi pi-angle-down"
+                severity="secondary"
+                class="bank-item-button"
+                @click="onClickMoveDown(bank.id)"
+              />
+            </ButtonGroup>
+            <Button
+              v-if="idx === editedBanks.length - 1"
+              icon="pi pi-angle-up"
+              severity="secondary"
+              class="bank-item-button double"
+              @click="onClickMoveUp(bank.id)"
+            />
+  
+            <Button
+              icon="pi pi-times"
+              variant="text"
+              class="bank-item-button delete-button"
+              @click="onClickDelete(bank.id)"
+            />
+          </div>
+        </div>
 
-          <Button
-            icon="pi pi-times"
-            variant="text"
-            class="bank-item-button delete-button"
-            @click="onClickDelete(bank.id)"
-          />
+        <div v-else class="bank-items-empty-state">
+          <div>
+            <p>Список банков пока пуст.</p>
+            <p>Нажмите на кнопку ниже, чтобы добавить первый банк.</p>
+          </div>
         </div>
 
         <div class="add-category-section">
@@ -95,6 +104,7 @@ import {
   moveArrElement,
 } from '../../utils/common'
 import { useUiHistory } from '../../composables/useUiHistory'
+import { useAppSettingsStore } from '../../stores/appSettingsStore'
 import BanksEditColorSelector from './BanksEditColorSelector.vue'
 import AppConfirmDialog from './AppConfirmDialog.vue'
 
@@ -104,7 +114,15 @@ const emit = defineEmits(['toggle'])
 const { getComputedVisible } = useUiHistory()
 const visible = getComputedVisible('banksEdit')
 const openDialog = () => visible.value = true
-watch(() => visible.value, () => editedBanks.value = banks.value.map(b => ({ ...b })))
+watch(() => visible.value,
+  () => {
+    if (visible.value) {
+      editedBanks.value = banks.value.map(b => ({ ...b }))
+    } else {
+      useAppSettingsStore().isOpenBanksEditDialog = false
+    }
+  }
+)
 
 const banks = computed(() => useBanksStore().banksSorted)
 const editedBanks = ref(banks.value.map(b => ({ ...b })))
@@ -151,7 +169,6 @@ const onClickSave = () => {
 }
 
 defineExpose({ open: openDialog })
-
 </script>
 
 <style lang="scss">
@@ -185,6 +202,16 @@ defineExpose({ open: openDialog })
         color: var(--p-dialog-color);
       }
     }
+  }
+
+  .bank-items-empty-state {
+    height: 100%;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--p-toolbar-color);
   }
 }
 </style>
